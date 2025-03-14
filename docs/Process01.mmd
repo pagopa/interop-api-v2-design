@@ -1,0 +1,77 @@
+sequenceDiagram
+
+    actor UtentePA/AOO     
+    participant SistemaPA/AOO 
+    participant PDNDWeb 
+    participant PDNDInterop 
+    participant IPA 
+    participant IPAPDND 
+    
+    autonumber
+
+    rect rgb(240,128,128)
+        note right of UtentePA/AOO: Pubblicazione da parte dalla PA/AOO (<id_aderente_PDND>) dell' e-service protocollo informatico in PDND
+        UtentePA/AOO ->>+ PDNDWeb: Registrare eservice di Protocollo Informativo
+        Note over UtentePA/AOO, PDNDWeb: Parametri richiesti: <br> 1) <template> del Protocollo Informatico <br> 2) <uri_eService> al eService per lo specifica AOO <br> 3) aud <br> 4) <codice_uni_aoo>
+        PDNDWeb ->>- UtentePA/AOO: <id_eService_aoo>
+    
+        note right of UtentePA/AOO: Processo di delega da parte della PA/AOO (<id_aderente_PDND>)
+        alt
+            UtentePA/AOO ->>+ PDNDWeb: Registrare Delaga ad AGID
+            Note over UtentePA/AOO, PDNDWeb:  dove <br> <organizzazioneDelegata> = "AGID", <br> <tipoDelega> = "minimal" (delega che consente la sola gestione delle richieste di fruizione e finalità) 
+            PDNDWeb ->>- UtentePA/AOO: <esito> OK/KO
+        else
+            SistemaPA/AOO ->>+ PDNDInterop: INSERT_DelegationRequest (<OrganizzazioneDelegata>, <RiferimentoEcosistemaAOO>, <tipoDelega>) voucher <id_aderente_PDND>
+            Note over UtentePA/AOO, PDNDWeb:  dove <br> <organizzazioneDelegata> = "AGID", <br> <tipoDelega> = "minimal" (delega che consente la sola gestione delle richieste di fruizione e finalità)
+            PDNDInterop ->>- SistemaPA/AOO: <esito> OK/KO
+        end
+    end
+    
+    rect rgb(60,179,113)
+        note right of UtentePA/AOO: Registrazione del id dell'eServices nella scheda AOO in indicepa.gov.it
+
+        Note over IPA: <id_aderente_PDND> = identificativo della organizationId della Amministrazione (codice ipa/codice uni aoo) che ha registrato il servizio
+        UtentePA/AOO -) IPA: Registrare <id_eService_aoo> e <id_aderente_PDND> nella scheda della <codice_uni_aoo> e indica <DD_AOO> da utilizzare per le comunicazioni
+        activate IPA
+
+        IPA ->> IPAPDND: check (<id_aderente_PDND>, <codice_uni_aoo>, <id_eService_aoo>, <DD_AOO>)
+            activate IPAPDND
+
+            IPAPDND ->> IPAPDND: memorizza in IPAPDND.AHDERENT (<id_aderente_PDND>, <codice_uni_aoo>, <id_eService_aoo>, <DD_AOO>, stato=NEW_ADERENTE)
+
+            Note over IPAPDND: CONTROLLO_1 - Verifica TEMPLATE E ATTRIBUTE
+            IPAPDND ->>+ PDNDInterop: GET_EserviceTemplates(<id_eService_aoo>) voucher <AGID> 
+            PDNDInterop ->> IPAPDND: template_eservice_applied 
+
+            alt se template_eservice_applied <> <template> del Protocollo Informatico
+
+                IPAPDND ->> IPAPDND: elimina in IPAPDND.AHDERENT (<id_aderente_PDND>, <codice_uni_aoo>, <id_eService_aoo>, <DD_AOO>, stato=NEW_ADERENTE)
+                IPAPDND ->> IPA: KO Controlla <id_eService_aoo> per <codice_uni_aoo>
+
+            else se template_eservice_applied = <template> del Protocollo Informatico
+
+                Note over IPAPDND: CONTROLLO_2 - Verifica Delega per e-service ok template
+                IPAPDND ->>+ PDNDInterop: GET_StateDelegation(<id_aderente_PDND>, <riferimento_ecosistema_AOO>) voucher AGID
+                PDNDInterop ->>- IPAPDND: state:notExist/accepted/toAccept
+
+                alt state = notExist                    
+                    IPAPDND ->> IPA: OK_NODELEGA - warning AGID non ha delega per <id_aderente_PDND>
+                else state = accepted OR state = toAccept
+                    alt state = toAccept                        
+                        IPAPDND ->>+ PDNDInterop: INSERT_AcceptDelegation(<id_aderente_PDND>, <riferimento_ecosistema_AOO>, accept) voucher AGID
+                        PDNDInterop ->>- IPAPDND: ack                        
+                    end                    
+                    IPAPDND ->> IPA: OK_ALL - Controlli completati con successo
+                end           
+            end
+
+            deactivate IPAPDND
+
+        alt OK_ALL OR OK_NODELEGA
+            IPA ->> IPA: Registra <id_eService_aoo> in "urlApiProtocolloInformatico" per scheda AOO            
+            IPA -) UtentePA/AOO: OK_ALL OR OK_NODELEGA
+        else KO
+            IPA -) UtentePA/AOO: KO
+        end
+        deactivate IPA    
+    end

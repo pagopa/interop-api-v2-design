@@ -1,0 +1,90 @@
+sequenceDiagram
+    
+    participant PECPA/AOO     
+    participant PDNDInterop     
+    participant IPAPDND 
+
+    autonumber
+
+    rect rgb(60,179,113)
+    note right of IPAPDND: BATCH Riprova Fruizione/Finalità per PENDING
+
+    activate IPAPDND  
+
+    loop per ogni (<id_aderente_PDND>|p, <codice_uni_aoo>|p, <id_eService_aoo>|p, <DD_AOO>|p, STATO) riga in AHDERENT nello STATO = "PENDING" [|p = "PENDING"]
+ 
+        note right of IPAPDND: Loop su tutte le richieste di fruizione e finalità rimaste pending per la specifica AOO = PENDING_AOO [|to, |from]
+        loop per ogni riga della PENDING_AOO dove "<id_aderente_PDND>|from"  =  <id_aderente_PDND>|p              
+
+            alt se TIPO di PENDING_AOO = "FRUITION"
+                note right of IPAPDND: Verifico FRUITION (servizio idempotente)
+
+                IPAPDND -->> PDNDInterop: INSERT_RequestFruition(<id_aderente_PDND>|from --> <id_eService_aoo>|to)|PENDING_AOO)  voucher AGID 
+                PDNDInterop -->> IPAPDND: stateInsertFruition: noDelegation/requestFruitionPending/<idFruition>
+    
+                alt stateInsertFruition = noDelegation
+                    IPAPDND -->> IPAPDND: changeStateVAR=COMPLITED
+                    IPAPDND -->> IPAPDND: ADD PEC_RECORD DEST <DD_AOO>|from NOTIFICA NON DELEGA PER VERIFICARE FRUIZIONE PENDING A (<id_aderente_PDND>|from --> <id_eService_aoo>|to) (TIPO FRUITION-RETRY)     
+                    IPAPDND -->> IPAPDND: DELETE riga loop da PENDING_AOO
+                    IPAPDND -->> IPAPDND: next element loop                     
+                
+                else stateInsertFruition = requestFruitionPending
+                    IPAPDND -->> IPAPDND: next element loop             
+                
+                else stateInsertFruition = <idFruition>
+                    IPAPDND -->> IPAPDND: continua               
+                end                                 
+
+            else se IN di PENDING_AOO TIPO = "PURPOSE" (retry) oppure FRUIZIONE appena creato step precedente (new)
+            
+                IPAPDND -->> PDNDInterop: INSERT_Purpose(<idFruition> or (<idFruition>)|from, <template_purpose_AOOProt>) voucher AGID (<idPurpose>|from !!)
+                PDNDInterop -->> IPAPDND: stateInsertPurpose: noDelegation/requestPurposePending/<idPurpose>
+
+                alt stateInsertPurpose = noDelegation
+                    IPAPDND -->> IPAPDND: changeStateVAR=COMPLITED          
+                    alt (retry)
+                        IPAPDND -->> IPAPDND: --> ADD PEC_RECORD DEST <DD_AOO>|from NOTIFICA NON DELEGA PER VERIFICARE FINALITA' PENDING <idPurpose>|from (TIPO PURPOSE-RETRY) 
+                    else (new)
+                        IPAPDND -->> IPAPDND: --> ADD PEC_RECORD DEST <DD_AOO>|from NOTIFICA NON DELEGA PER GESTIONE FINALITA' ALLA <idFruition> (TIPO PURPOSE)
+                    end     
+                    IPAPDND -->> IPAPDND: delete riga loop da PENDING_AOO
+                
+                else stateInsertPurpose = requestPurposePending
+                    alt (retry)
+                        IPAPDND -->> IPAPDND: next element loop
+                    else (new)   
+                        IPAPDND -->> IPAPDND: changeStateVAR=PENDING
+						IPAPDND -->> IPAPDND: ADD PENDING_AOO <idPurpose> (ASSOCIATO ALL'ADERENTE DEL <idFruition>|from) (TIPO PURPOSE)
+						IPAPDND -->> IPAPDND: ADD PEC_RECORD DEST <DD_AOO>|to NOTIFICA FINALITA' PENDING (<id_aderente_PDND>|from --> <id_eService_aoo>|to e <idFruition>) (TIPO PURPOSE-PENDING)
+                    end
+                
+                else stateInsertPurpose = <idPurpose>
+                    IPAPDND -->> IPAPDND: changeStateVAR=COMPLITED  
+                    IPAPDND -->> IPAPDND: ADD PEC_RECORD DEST <DD_AOO>|from NOTIFICA ADD CLIENT <idPurpose> (TIPO PURPOSE-OK)
+                    IPAPDND -->> IPAPDND: delete riga loop dalle PENDING_AOO 
+                end 
+
+                IPAPDND -->> IPAPDND: AGGIORNA in ADHERENT (<id_aderente_PDND>, <codice_uni_aoo>, <id_eService_aoo>, <DD_AOO>, stato=changeStateVAR)            
+            end
+
+        end
+
+    end
+
+    alt PEC_RECORD <> NULL
+        loop PEC_RECORD orderby DEST: <DD_AOO>
+            alt "PURPOSE"
+                IPAPDND -->> IPAPDND: NO DELEGA PER FARE PURPOSE (DELEGA AD AGID E' STATA TOLTA)
+            else "FRUITION-RETRY"
+                IPAPDND -->> IPAPDND: NECESSARIA ACCETTAZIONE RICHIESTA DI FRUIZIONE
+            else "PURPOSE-RETRY"
+                IPAPDND -->> IPAPDND: NECESSARIA ACCETTAZIONE FINALITA'
+            else "PURPOSE-OK"
+                IPAPDND -->> IPAPDND: NECESSARIO ADD CLIENT ALLA FINALITA'
+            end 
+        end
+        IPAPDND --) PECPA/AOO: se rottura di chiave DEST <DD_AOO> invia PEC
+    end   
+    
+    deactivate IPAPDND  
+end
