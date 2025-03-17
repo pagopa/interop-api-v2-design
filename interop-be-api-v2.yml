@@ -285,6 +285,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CertifiedAttribute"
+  /certifiedAttributes/{attributeId}:
+    parameters:
+    - name: attributeId
+      in: path
+      description: The attribute id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      description: Get certified attribute
+      responses:
+        "200":
+          description: Certified attribute retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertifiedAttribute"
   /clients/{clientId}/purposes:
     parameters:
     - name: clientId
@@ -608,6 +626,44 @@ paths:
       responses:
         "204":
           description: Purpose version approved
+  /purposes/{purposeId}/versions/{versionId}/suspend:
+    parameters:
+      - name: purposeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      description: Suspend Purpose Version
+      responses:
+        "204":
+          description: Purpose version suspended
+  /purposes/{purposeId}/versions/{versionId}/unsuspend:
+    parameters:
+      - name: purposeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      description: Unsuspend Purpose Version
+      responses:
+        "204":
+          description: Purpose version unsuspended
   /tenants/{tenantId}/certifiedAttributes:
     parameters:
       - name: tenantId
