@@ -145,6 +145,31 @@ paths:
       responses:
         "204":
           description: Delegation accepted
+  /consumer/delegations/{delegationId}/reject:
+    parameters:
+      - name: delegationId
+        in: path
+        description: The delegation id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      description: Rejects a consumer delegation
+      summary: Consumer delegation rejection
+      tags:
+        - consumer
+      operationId: rejectConsumerDelegation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelegationRejection"
+        required: true
+        description: Payload for delegation rejection
+      responses:
+        "204":
+          description: Delegation reject
   /eservices/{eserviceId}:
     parameters:
       - name: eserviceId
@@ -634,6 +659,14 @@ components:
         - ACTIVE
         - REJECTED
         - REVOKED
+    DelegationRejection:
+      type: object
+      additionalProperties: false
+      properties:
+        rejectionReason:
+          type: string
+      required:
+        - rejectionReason
     DelegationSeed:
       type: object
       additionalProperties: false
