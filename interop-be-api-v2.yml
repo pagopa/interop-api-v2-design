@@ -46,6 +46,112 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/activate:
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: agreementId
+        in: path
+        required: true
+    post:
+      summary: Agreement Activation
+      operationId: activateAgreement
+      responses:
+        "200":
+          description: Agreement activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/reject:
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: agreementId
+        in: path
+        required: true
+        description: identifier of the pending agreement to be rejected
+    post:
+      summary: Reject Agreement
+      operationId: rejectAgreement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgreementRejection"
+        required: true
+      responses:
+        "200":
+          description: Agreement rejected.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/submit:
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: agreementId
+        in: path
+        required: true
+        description: identifier of the draft agreement to be submitted
+    post:
+      summary: Agreement Sumbission
+      operationId: submitAgreement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgreementSubmission"
+        description: payload for agreement submission
+        required: true
+      responses:
+        "200":
+          description: Draft agreement submitted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/suspend:
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: agreementId
+        in: path
+        required: true
+        description: identifier of the pending agreement to be suspended
+    post:
+      summary: Suspend Agreement
+      operationId: suspendAgreement
+      responses:
+        "200":
+          description: Active agreement suspended.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/unsuspend:
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: agreementId
+        in: path
+        required: true
+    post:
+      summary: Agreement Unsuspended
+      operationId: unsuspendAgreement
+      responses:
+        "200":
+          description: Agreement activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
   /agreements/{agreementId}/upgrade:
     post:
       summary: Upgrade the agreement
@@ -609,6 +715,25 @@ components:
         - SUSPENDED
         - MISSING_CERTIFIED_ATTRIBUTES
         - REJECTED
+    AgreementRejection:
+      type: object
+      additionalProperties: false
+      description: contains the information for agreement rejection.
+      properties:
+        reason:
+          type: string
+          minLength: 20
+          maxLength: 1000
+      required:
+        - reason
+    AgreementSubmission:
+      type: object
+      additionalProperties: false
+      description: contains the information for agreement submission.
+      properties:
+        consumerNotes:
+          type: string
+          maxLength: 1000
     CertifiedAttribute:
       title: Attribute
       type: object
