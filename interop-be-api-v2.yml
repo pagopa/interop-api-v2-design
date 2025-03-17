@@ -46,6 +46,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}/upgrade:
+    post:
+      summary: Upgrade the agreement
+      description: Upgrades the agreement with a newer eservice version, if any
+      parameters:
+        - name: agreementId
+          in: path
+          description: The identifier of the agreement to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Agreement updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
   /consumerDelegations:
     get:
       description: List delegations
@@ -143,7 +162,7 @@ paths:
       responses:
         "204":
           description: Delegation accepted
-  "/certifiedAttributes":
+  /certifiedAttributes:
     post:
       summary: Create certified attribute
       description: Create the attribute passed as payload
