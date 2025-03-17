@@ -47,6 +47,73 @@ paths:
               schema:
                 $ref: "#/components/schemas/Agreement"
   /consumerDelegations:
+    get:
+      description: List delegations
+      summary: List delegations
+      tags:
+        - delegation
+      operationId: getConsumerDelegations
+      parameters:
+        - in: query
+          name: states
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/DelegationState"
+            default: []
+          explode: false
+        - in: query
+          name: delegatorIds
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: delegateIds
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: eserviceIds
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: Delegations retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsumerDelegations"
     post:
       description: Creates a consumer delegation
       operationId: createConsumerDelegation
@@ -97,50 +164,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EService"
-  /eservices/{eserviceId}/consumerDelegations:
-    parameters:
-    - name: eserviceId
-      in: path
-      description: The eservice id
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - name: delegateId
-      in: query
-      description: The delegate id
-      required: true
-      schema:
-        type: string
-        format: uuid
-    - name: state
-      in: query
-      description: The delegation state
-      schema:
-        $ref: "#/components/schemas/DelegationState"
-    - name: offset
-      in: query
-      description: The offset used for pagination
-      schema:
-        type: integer
-        format: int32
-    - name: limit
-      in: query
-      description: The limit used for pagination
-      schema:
-        type: integer
-        format: int32
-    get:
-      description: Get producer delegation by eservice id
-      responses:
-        "200":
-          description: Delegation retrieved.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ConsumerDelegations"
   /eservices/{eserviceId}/descriptors:
     parameters:
       - name: eserviceId
