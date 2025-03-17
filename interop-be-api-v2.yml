@@ -1055,6 +1055,9 @@ components:
         eserviceId:
           type: string
           format: uuid
+        consumerId:
+          type: string
+          format: uuid
         delegationId:
           type: string
           format: uuid
@@ -1077,7 +1080,7 @@ components:
           format: int32
       required:
         - eserviceId
-        - delegationId
+        - consumerId
         - title
         - description
         - isFreeOfCharge
