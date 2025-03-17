@@ -1,0 +1,1048 @@
+openapi: 3.0.3
+info:
+  title: PDND Interop API
+  version: "2"
+  contact:
+    name: API Support
+    url: "http://www.example.com/support"
+    email: support@example.com
+  termsOfService: "http://swagger.io/terms/"
+servers:
+  - url: "/v2"
+security:
+  - bearerAuth: []
+paths:
+  /agreements:
+    post:
+      description: Creates an agreement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgreementSeed"
+        required: true
+      responses:
+        "201":
+          description: Agreement created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /agreements/{agreementId}:
+    parameters:
+    - name: agreementId
+      in: path
+      description: The agreement id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      description: Get agreement
+      responses:
+        "200":
+          description: Agreement retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreement"
+  /consumerDelegations:
+    post:
+      description: Creates a consumer delegation
+      operationId: createConsumerDelegation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelegationSeed"
+        required: true
+      responses:
+        "201":
+          description: Delegation created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsumerDelegation"
+  /consumerDelegations/{delegationId}/accept:
+    post:
+      description: Accept consumer delegation
+      operationId: acceptConsumerDelegation
+      parameters:
+        - name: delegationId
+          in: path
+          description: The delegation id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Delegation accepted
+  /eservices/{eserviceId}:
+    parameters:
+      - name: eserviceId
+        in: path
+        description: The eservice id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get eservice
+      operationId: getEservice
+      responses:
+        "200":
+          description: Eservice retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EService"
+  /eservices/{eserviceId}/consumerDelegations:
+    parameters:
+    - name: eserviceId
+      in: path
+      description: The eservice id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: delegateId
+      in: query
+      description: The delegate id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: state
+      in: query
+      description: The delegation state
+      schema:
+        $ref: "#/components/schemas/DelegationState"
+    - name: offset
+      in: query
+      description: The offset used for pagination
+      schema:
+        type: integer
+        format: int32
+    - name: limit
+      in: query
+      description: The limit used for pagination
+      schema:
+        type: integer
+        format: int32
+    get:
+      description: Get producer delegation by eservice id
+      responses:
+        "200":
+          description: Delegation retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ConsumerDelegations"
+  /eservices/{eserviceId}/descriptors:
+    parameters:
+      - name: eserviceId
+        in: path
+        description: The eservice id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: state
+        in: query
+        description: The descriptor state
+        schema:
+          $ref: "#/components/schemas/EServiceDescriptorState"
+      - name: offset
+        in: query
+        description: The offset used for pagination
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: The limit used for pagination
+        schema:
+          type: integer
+          format: int32
+    get:
+      description: Get eservice descriptors
+      operationId: getEserviceDescriptors
+      responses:
+        "200":
+          description: E-Service descriptors retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceDescriptors"
+  /eservices/{eserviceId}/descriptors/{descriptorId}:
+    parameters:
+      - name: eserviceId
+        in: path
+        description: The eservice id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: descriptorId
+        in: path
+        description: The descriptor id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get eservice descriptor
+      operationId: getEserviceDescriptor
+      responses:
+        "200":
+          description: E-Service descriptor retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceDescriptor"
+  /eserviceTemplates/{templateId}:
+    parameters:
+    - name: templateId
+      in: path
+      description: The template id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getEserviceTemplate
+      responses:
+        "200":
+          description: E-Service template retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceTemplate"
+  /eserviceTemplates/{templateId}/versions:
+    parameters:
+    - name: templateId
+      in: path
+      description: The template id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: state
+      in: query
+      description: The version state
+      schema:
+        $ref: "#/components/schemas/EServiceTemplateVersionState"
+    - name: offset
+      in: query
+      description: The offset used for pagination
+      schema:
+        type: integer
+        format: int32
+    - name: limit
+      in: query
+      description: The limit used for pagination
+      schema:
+        type: integer
+        format: int32
+    get:
+      description: Get eservice template versions
+      responses:
+        "200":
+          description: E-Service template versions retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EServiceTemplateVersion"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - process
+      summary: Adds a version to the specified e-service template
+      operationId: createEServiceTemplateVersion
+      parameters:
+        - name: templateId
+          in: path
+          description: The E-Service template id
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: EService template version created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceTemplateVersion"
+  /eserviceTemplates/{templateId}/versions/{version}:
+    parameters:
+    - name: templateId
+      in: path
+      description: The template id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: version
+      in: path
+      description: The version id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      description: Get eservice template version
+      responses:
+        "200":
+          description: E-Service template version retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceTemplateVersion"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - process
+      summary: Updates a draft template version
+      operationId: updateDraftTemplateVersion
+      parameters:
+        - name: templateId
+          in: path
+          description: The E-Service template id
+          required: true
+          schema:
+            type: string
+        - name: templateVersionId
+          in: path
+          description: The E-Service template version Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: An E-Service template version seed
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EServiceTemplateVersionUpdateSeed"
+        required: true
+      responses:
+        "200":
+          description: Template draft version updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceTemplate"
+  /purposes:
+    post:
+      description: Creates a purpose
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurposeSeed"
+        required: true
+      responses:
+        "201":
+          description: Purpose created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purpose"
+  /purposes/{purposeId}:
+    get:
+      description: Get purpose
+      parameters:
+      - name: purposeId
+        in: path
+        description: The purpose id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Purpose retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purpose"
+  /purposes/{purposeId}/versions/{versionId}/activate:
+    parameters:
+      - name: purposeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      description: Activate Purpose Version
+      responses:
+        "204":
+          description: Purpose version activated
+  /purposes/{purposeId}/versions/{versionId}/approve:
+    parameters:
+      - name: purposeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      description: Approve Waiting for approval Purpose Version
+      responses:
+        "204":
+          description: Purpose version approved
+
+components:
+  schemas:
+    Agreement:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        eserviceId:
+          type: string
+          format: uuid
+        descriptorId:
+          type: string
+          format: uuid
+        producerId:
+          type: string
+          format: uuid
+        consumerId:
+          type: string
+          format: uuid
+        state:
+          $ref: "#/components/schemas/AgreementState"
+        suspendedByConsumer:
+          type: boolean
+        suspendedByProducer:
+          type: boolean
+        suspendedByPlatform:
+          type: boolean
+        consumerNotes:
+          type: string
+        rejectionReason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        suspendedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - eserviceId
+        - descriptorId
+        - producerId
+        - consumerId
+        - state
+        - createdAt
+    AgreementApprovalPolicy:
+      type: string
+      description: EService Descriptor policy for new Agreements approval
+      enum:
+        - AUTOMATIC
+        - MANUAL
+    AgreementSeed:
+      type: object
+      additionalProperties: false
+      description: Contains the information for agreement creation
+      properties:
+        eserviceId:
+          type: string
+          format: uuid
+        descriptorId:
+          type: string
+          format: uuid
+        delegationId:
+          type: string
+          format: uuid
+      required:
+        - eserviceId
+        - descriptorId
+    AgreementState:
+      type: string
+      description: Agreement State
+      enum:
+        - DRAFT
+        - ACTIVE
+        - ARCHIVED
+        - PENDING
+        - SUSPENDED
+        - MISSING_CERTIFIED_ATTRIBUTES
+        - REJECTED
+    ConsumerDelegation:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        delegatorId:
+          type: string
+          format: uuid
+        delegateId:
+          type: string
+          format: uuid
+        eserviceId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        rejectionReason:
+          type: string
+        revokedAt:
+          type: string
+          format: date-time
+        state:
+          $ref: "#/components/schemas/DelegationState"
+        activationContract:
+          $ref: "#/components/schemas/DelegationContractDocument"
+        revocationContract:
+          $ref: "#/components/schemas/DelegationContractDocument"
+        stamps:
+          $ref: "#/components/schemas/DelegationStamps"
+      required:
+        - id
+        - delegatorId
+        - delegateId
+        - eserviceId
+        - createdAt
+        - state
+        - kind
+        - stamps
+    ConsumerDelegations:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConsumerDelegation"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
+    DelegationContractDocument:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        prettyName:
+          type: string
+        contentType:
+          type: string
+        path:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - prettyName
+        - contentType
+        - path
+        - createdAt
+    DelegationStamp:
+      type: object
+      additionalProperties: false
+      properties:
+        who:
+          type: string
+          format: uuid
+        when:
+          type: string
+          format: date-time
+      required:
+        - who
+        - when
+    DelegationStamps:
+      type: object
+      additionalProperties: false
+      properties:
+        submission:
+          $ref: "#/components/schemas/DelegationStamp"
+        activation:
+          $ref: "#/components/schemas/DelegationStamp"
+        rejection:
+          $ref: "#/components/schemas/DelegationStamp"
+        revocation:
+          $ref: "#/components/schemas/DelegationStamp"
+      required:
+        - submission
+    DelegationState:
+      type: string
+      enum:
+        - WAITING_FOR_APPROVAL
+        - ACTIVE
+        - REJECTED
+        - REVOKED
+    DelegationSeed:
+      type: object
+      additionalProperties: false
+      properties:
+        eserviceId:
+          type: string
+          format: uuid
+        delegateId:
+          type: string
+          format: uuid
+      required:
+        - eserviceId
+        - delegateId
+    EService:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - producerId
+        - name
+        - description
+        - technology
+        - descriptors
+        - riskAnalysis
+        - mode
+      properties:
+        id:
+          type: string
+          format: uuid
+        producerId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        technology:
+          $ref: "#/components/schemas/EServiceTechnology"
+        mode:
+          $ref: "#/components/schemas/EServiceMode"
+        isSignalHubEnabled:
+          type: boolean
+        isConsumerDelegable:
+          type: boolean
+        isClientAccessDelegable:
+          type: boolean
+        template:
+          $ref: "#/components/schemas/EServiceTemplateRef"
+          required: false
+    EServiceDescriptor:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        description:
+          type: string
+        audience:
+          type: array
+          items:
+            type: string
+        voucherLifespan:
+          type: integer
+          format: int32
+        dailyCallsPerConsumer:
+          description: "maximum number of daily calls that this descriptor can afford per consumer."
+          type: integer
+          format: int32
+          minimum: 1
+        dailyCallsTotal:
+          description: "total daily calls available for this e-service."
+          type: integer
+          format: int32
+          minimum: 1
+        state:
+          $ref: "#/components/schemas/EServiceDescriptorState"
+        agreementApprovalPolicy:
+          $ref: "#/components/schemas/AgreementApprovalPolicy"
+        serverUrls:
+          type: array
+          items:
+            type: string
+        publishedAt:
+          type: string
+          format: date-time
+        suspendedAt:
+          type: string
+          format: date-time
+        deprecatedAt:
+          type: string
+          format: date-time
+        archivedAt:
+          type: string
+          format: date-time
+        templateVersion:
+          $ref: "#/components/schemas/EServiceTemplateVersionRef"
+      required:
+        - id
+        - version
+        - docs
+        - state
+        - creationDate
+        - audience
+        - voucherLifespan
+        - dailyCallsPerConsumer
+        - dailyCallsTotal
+        - agreementApprovalPolicy
+        - serverUrls
+    EServiceDescriptors:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/EServiceDescriptor"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
+    EServiceDescriptorState:
+      type: string
+      description: EService Descriptor State
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - DEPRECATED
+        - SUSPENDED
+        - ARCHIVED
+        - WAITING_FOR_APPROVAL
+    EServiceMode:
+      type: string
+      description: Risk Analysis Mode
+      enum:
+        - RECEIVE
+        - DELIVER
+    EServiceTechnology:
+      type: string
+      description: API Technology
+      enum:
+        - REST
+        - SOAP
+    EServiceTemplateRef:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        instanceLabel:
+          type: string
+          format: uuid
+    EServiceTemplate:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        creatorId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        intendedTarget:
+          type: string
+        description:
+          type: string
+        technology:
+          $ref: "#/components/schemas/EServiceTechnology"
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/EServiceTemplateVersion"
+        mode:
+          $ref: "#/components/schemas/EServiceMode"
+        isSignalHubEnabled:
+          type: boolean
+      required:
+        - id
+        - creatorId
+        - name
+        - intendedTarget
+        - description
+        - technology
+        - versions
+        - riskAnalysis
+        - mode
+    EserviceAttributeSeed:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+        - id
+    EserviceAttributesSeed:
+      additionalProperties: false
+      properties:
+        certified:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/EserviceAttributeSeed"
+        declared:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/EserviceAttributeSeed"
+        verified:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/EserviceAttributeSeed"
+      required:
+        - certified
+        - declared
+        - verified
+    EServiceTemplateVersion:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          format: int32
+        description:
+          type: string
+        voucherLifespan:
+          type: integer
+          format: int32
+        dailyCallsPerConsumer:
+          description: "maximum number of daily calls that this descriptor can afford per consumer."
+          type: integer
+          format: int32
+          minimum: 1
+        dailyCallsTotal:
+          description: "total daily calls available for this e-service."
+          type: integer
+          format: int32
+          minimum: 1
+        state:
+          $ref: "#/components/schemas/EServiceTemplateVersionState"
+        agreementApprovalPolicy:
+          $ref: "#/components/schemas/AgreementApprovalPolicy"
+        publishedAt:
+          type: string
+          format: date-time
+        suspendedAt:
+          type: string
+          format: date-time
+        deprecatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - version
+        - state
+        - creationDate
+        - voucherLifespan
+    EServiceTemplateVersionRef:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+    EServiceTemplateVersionState:
+      type: string
+      description: EService Descriptor State
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - DEPRECATED
+        - SUSPENDED
+    Pagination:
+      type: object
+      additionalProperties: false
+      properties:
+        offset:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+      required:
+        - offset
+        - limit
+        - totalCount
+    EServiceTemplateVersionUpdateSeed:
+      type: object
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+          minLength: 10
+          maxLength: 250
+        voucherLifespan:
+          type: integer
+          format: int32
+          minimum: 60
+          maximum: 86400
+        dailyCallsPerConsumer:
+          description: "maximum number of daily calls that this descriptor can afford."
+          type: integer
+          format: int32
+          minimum: 1
+        dailyCallsTotal:
+          description: "total daily calls available for this e-service."
+          type: integer
+          format: int32
+          minimum: 1
+        agreementApprovalPolicy:
+          $ref: "#/components/schemas/AgreementApprovalPolicy"
+        attributes:
+          $ref: "#/components/schemas/EserviceAttributesSeed"
+      required:
+        - voucherLifespan
+        - attributes
+    Purpose:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        eserviceId:
+          type: string
+          format: uuid
+        consumerId:
+          type: string
+          format: uuid
+        suspendedByConsumer:
+          type: boolean
+        suspendedByProducer:
+          type: boolean
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isRiskAnalysisValid:
+          type: boolean
+        isFreeOfCharge:
+          type: boolean
+        freeOfChargeReason:
+          type: string
+        delegationId:
+          type: string
+          format: uuid
+      required:
+        - id
+        - eserviceId
+        - consumerId
+        - title
+        - description
+        - createdAt
+        - isRiskAnalysisValid
+        - isFreeOfCharge
+    PurposeSeed:
+      type: object
+      additionalProperties: false
+      description: contains the expected payload for purpose creation.
+      properties:
+        eserviceId:
+          type: string
+          format: uuid
+        delegationId:
+          type: string
+          format: uuid
+        riskAnalysisForm:
+          $ref: "#/components/schemas/RiskAnalysisFormSeed"
+        title:
+          type: string
+          minLength: 5
+          maxLength: 60
+        description:
+          type: string
+          minLength: 10
+          maxLength: 250
+        isFreeOfCharge:
+          type: boolean
+        freeOfChargeReason:
+          type: string
+        dailyCalls:
+          type: integer
+          format: int32
+      required:
+        - eserviceId
+        - delegationId
+        - title
+        - description
+        - isFreeOfCharge
+        - dailyCalls
+    RiskAnalysisFormSeed:
+    # TODO Improve types
+      type: object
+      additionalProperties: false
+      properties:
+        version:
+          type: string
+          minLength: 1
+          maxLength: 250
+        answers:
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              minLength: 1
+              maxLength: 250
+      required:
+        - version
+        - answers
