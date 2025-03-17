@@ -46,7 +46,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Agreement"
-  /agreements/{agreementId}/activate:
+  /agreements/{agreementId}/approve:
     parameters:
       - schema:
           type: string
@@ -55,11 +55,11 @@ paths:
         in: path
         required: true
     post:
-      summary: Agreement Activation
-      operationId: activateAgreement
+      summary: Approve Pending Agreement
+      operationId: approveAgreement
       responses:
         "200":
-          description: Agreement activated
+          description: Agreement approved
           content:
             application/json:
               schema:
@@ -285,7 +285,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CertifiedAttribute"
-  /consumer/delegations/{delegationId}/reject:
+  /clients/{clientId}/purposes:
+    parameters:
+    - name: clientId
+      in: path
+      description: The client id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      description: Add a purpose to the client
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientAddPurpose"
+        required: true
+      responses:
+        "204":
+          description: Purpose added
+  /consumerDelegations/{delegationId}/reject:
     parameters:
       - name: delegationId
         in: path
@@ -786,6 +806,15 @@ components:
         - description
         - name
         - code
+    ClientAddPurpose:
+      type: object
+      additionalProperties: false
+      properties:
+        purposeId:
+          type: string
+          format: uuid
+      required:
+        - purposeId
     ConsumerDelegation:
       type: object
       additionalProperties: false
