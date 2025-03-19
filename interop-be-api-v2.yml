@@ -13,6 +13,71 @@ security:
   - bearerAuth: []
 paths:
   /agreements:
+    get:
+      description: List agreements
+      summary: List agreements
+      operationId: getAgreements
+      parameters:
+        - in: query
+          name: states
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AgreementState"
+            default: []
+          explode: false
+        - in: query
+          name: producerIds
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: consumerIds
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: eserviceIds
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: Agreements retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agreements"
     post:
       description: Creates an agreement
       requestBody:
@@ -763,6 +828,19 @@ components:
       enum:
         - AUTOMATIC
         - MANUAL
+    Agreements:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agreement"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
     AgreementSeed:
       type: object
       additionalProperties: false
