@@ -564,7 +564,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EServiceTemplateVersion"
-  /eserviceTemplates/{templateId}/versions/{version}:
+  /eserviceTemplates/{templateId}/versions/{versionId}:
     parameters:
     - name: templateId
       in: path
@@ -573,7 +573,7 @@ paths:
       schema:
         type: string
         format: uuid
-    - name: version
+    - name: versionId
       in: path
       description: The version id
       required: true
@@ -599,7 +599,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: templateVersionId
+        - name: versionId
           in: path
           description: The E-Service template version Id
           required: true
