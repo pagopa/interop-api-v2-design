@@ -653,6 +653,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Purpose"
+  /purposes/{purposeId}/versions:
+    get:
+      description: Get purpose versions
+      parameters:
+      - name: purposeId
+        in: path
+        description: The purpose id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: state
+        in: query
+        description: The version state
+        schema:
+          $ref: "#/components/schemas/PurposeVersionState"
+      - name: offset
+        in: query
+        description: The offset used for pagination
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: The limit used for pagination
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Purpose versions retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PurposeVersion"
+  /purposes/{purposeId}/versions/{versionId}:
+    get:
+      description: Get purpose version
+      parameters:
+      - name: purposeId
+        in: path
+        description: The purpose id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: versionId
+        in: path
+        description: The version id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Purpose version retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurposeVersion"
   /purposes/{purposeId}/versions/{versionId}/activate:
     parameters:
       - name: purposeId
@@ -1487,6 +1549,71 @@ components:
         - description
         - isFreeOfCharge
         - dailyCalls
+    PurposeVersion:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        state:
+          $ref: "#/components/schemas/PurposeVersionState"
+        createdAt:
+          type: string
+          format: date-time
+        suspendedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        firstActivationAt:
+          type: string
+          format: date-time
+        dailyCalls:
+          description: "maximum number of daily calls that this version can perform."
+          type: integer
+          format: int32
+          minimum: 0
+        riskAnalysisDocument:
+          $ref: "#/components/schemas/PurposeVersionDocument"
+        rejectionReason:
+          type: string
+      required:
+        - id
+        - state
+        - dailyCalls
+        - createdAt
+      description: business representation of a purpose version
+    PurposeVersionDocument:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - contentType
+        - path
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        contentType:
+          type: string
+        path:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    PurposeVersionState:
+      type: string
+      description: Purpose State
+      enum:
+        - ACTIVE
+        - DRAFT
+        - SUSPENDED
+        - WAITING_FOR_APPROVAL
+        - ARCHIVED
+        - REJECTED
     RiskAnalysisFormSeed:
     # TODO Improve types
       type: object
