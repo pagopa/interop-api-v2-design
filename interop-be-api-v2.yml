@@ -492,6 +492,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EServiceDescriptor"
+  /eservices/{eserviceId}/riskAnalysis:
+    parameters:
+      - name: eserviceId
+        in: path
+        description: The eservice id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get eservice risk analysis
+      operationId: getEserviceRiskAnalyses
+      responses:
+        "200":
+          description: E-Service risk analysis retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceRiskAnalyses"
+  /eservices/{eserviceId}/riskAnalysis/{riskAnalysisId}:
+    get:
+      description: Get eservice risk analysis
+      operationId: getEserviceRiskAnalysis
+      parameters:
+        - name: eserviceId
+          in: path
+          description: The eservice id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: riskAnalysisId
+          in: path
+          description: The risk analysis id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: E-Service risk analysis retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EServiceRiskAnalysis"
   /eserviceTemplates/{templateId}:
     parameters:
     - name: templateId
@@ -824,6 +869,22 @@ paths:
       responses:
         "204":
           description: Purpose version unsuspended
+  /reversePurposes:
+    post:
+      description: Creates a purpose
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReversePurposeSeed"
+        required: true
+      responses:
+        "201":
+          description: Purpose created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purpose"
   /tenants/{tenantId}/certifiedAttributes:
     parameters:
       - name: tenantId
@@ -1307,6 +1368,91 @@ components:
       enum:
         - RECEIVE
         - DELIVER
+    EServiceRiskAnalyses:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/EServiceRiskAnalysis"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
+    EServiceRiskAnalysis:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        riskAnalysisForm:
+          $ref: "#/components/schemas/EServiceRiskAnalysisForm"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - riskAnalysisForm
+        - createdAt
+    EServiceRiskAnalysisForm:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        singleAnswers:
+          type: array
+          items:
+            $ref: "#/components/schemas/EServiceRiskAnalysisSingleAnswer"
+        multiAnswers:
+          type: array
+          items:
+            $ref: "#/components/schemas/EServiceRiskAnalysisMultiAnswer"
+      required:
+        - id
+        - version
+        - singleAnswers
+        - multiAnswers
+    EServiceRiskAnalysisSingleAnswer:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        value:
+          type: string
+      required:
+        - id
+        - key
+    EServiceRiskAnalysisMultiAnswer:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - key
+        - values
     EServiceTechnology:
       type: string
       description: API Technology
@@ -1578,6 +1724,40 @@ components:
           format: int32
       required:
         - eserviceId
+        - title
+        - description
+        - isFreeOfCharge
+        - dailyCalls
+    ReversePurposeSeed:
+      type: object
+      additionalProperties: false
+      description: contains the expected payload for purpose creation.
+      properties:
+        eserviceId:
+          type: string
+          format: uuid
+        consumerId:
+          type: string
+          format: uuid
+        riskAnalysisId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        isFreeOfCharge:
+          type: boolean
+        freeOfChargeReason:
+          type: string
+        dailyCalls:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+        - eserviceId
+        - consumerId
+        - riskAnalysisId
         - title
         - description
         - isFreeOfCharge
