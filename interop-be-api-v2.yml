@@ -635,6 +635,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Purpose"
+    get:
+      description: List purposes
+      parameters:
+      - name: eserviceIds
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+          default: []
+        explode: false
+      - name: offset
+        in: query
+        description: The offset used for pagination
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: The limit used for pagination
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Purposes retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Purposes"
   /purposes/{purposeId}:
     get:
       description: Get purpose
@@ -1549,6 +1582,19 @@ components:
         - description
         - isFreeOfCharge
         - dailyCalls
+    Purposes:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Purpose"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
     PurposeVersion:
       type: object
       additionalProperties: false
