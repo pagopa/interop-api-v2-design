@@ -149,7 +149,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Agreement rejected.
+          description: Agreement rejected
           content:
             application/json:
               schema:
@@ -175,7 +175,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Draft agreement submitted.
+          description: Draft agreement submitted
           content:
             application/json:
               schema:
@@ -194,7 +194,7 @@ paths:
       operationId: suspendAgreement
       responses:
         "200":
-          description: Active agreement suspended.
+          description: Active agreement suspended
           content:
             application/json:
               schema:
@@ -313,7 +313,7 @@ paths:
         required: true
       responses:
         "201":
-          description: Delegation created.
+          description: Delegation created
           content:
             application/json:
               schema:
@@ -331,8 +331,12 @@ paths:
             type: string
             format: uuid
       responses:
-        "204":
-          description: Delegation accepted
+        "200":
+          description: Delegation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsumerDelegation"
   /certifiedAttributes:
     post:
       summary: Create certified attribute
@@ -409,8 +413,12 @@ paths:
         required: true
         description: Payload for delegation rejection
       responses:
-        "204":
-          description: Delegation reject
+        "200":
+          description: Delegation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsumerDelegation"
   /eservices/{eserviceId}:
     parameters:
       - name: eserviceId
@@ -604,7 +612,7 @@ paths:
             type: string
       responses:
         "201":
-          description: EService template version created.
+          description: EService template version created
           content:
             application/json:
               schema:
@@ -634,7 +642,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EServiceTemplateVersion"
-    post:
+    patch:
       summary: Updates a draft template version
       operationId: updateDraftTemplateVersion
       parameters:
@@ -653,13 +661,13 @@ paths:
       requestBody:
         description: An E-Service template version seed
         content:
-          application/json:
+          application/merge-patch+json:
             schema:
               $ref: "#/components/schemas/EServiceTemplateVersionUpdateSeed"
         required: true
       responses:
         "200":
-          description: Template draft version updated.
+          description: Template draft version updated
           content:
             application/json:
               schema:
@@ -1028,7 +1036,7 @@ components:
     AgreementRejection:
       type: object
       additionalProperties: false
-      description: contains the information for agreement rejection.
+      description: contains the information for agreement rejection
       properties:
         reason:
           type: string
@@ -1039,7 +1047,7 @@ components:
     AgreementSubmission:
       type: object
       additionalProperties: false
-      description: contains the information for agreement submission.
+      description: contains the information for agreement submission
       properties:
         consumerNotes:
           type: string
@@ -1697,7 +1705,7 @@ components:
     PurposeSeed:
       type: object
       additionalProperties: false
-      description: contains the expected payload for purpose creation.
+      description: contains the expected payload for purpose creation
       properties:
         eserviceId:
           type: string
@@ -1731,7 +1739,7 @@ components:
     ReversePurposeSeed:
       type: object
       additionalProperties: false
-      description: contains the expected payload for purpose creation.
+      description: contains the expected payload for purpose creation
       properties:
         eserviceId:
           type: string
