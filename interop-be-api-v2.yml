@@ -2666,9 +2666,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PurposeVersion"
+                $ref: "#/components/schemas/PurposeVersions"
           headers:
             X-Rate-Limit-Limit:
               $ref: '#/components/headers/RateLimitLimitHeader'
@@ -2838,7 +2836,7 @@ paths:
               $ref: '#/components/headers/RateLimitRemainingHeader'
             X-Rate-Limit-Interval:
               $ref: '#/components/headers/RateLimitIntervalHeader'
-  /purposes/{purposeId}/versions/{versionId}/activate:
+  /purposes/{purposeId}/activate:
     parameters:
       - name: purposeId
         in: path
@@ -2846,17 +2844,11 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: versionId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
     post:
-      description: Activate Purpose Version
+      description: Activate Draft Purpose
       responses:
         "204":
-          description: Purpose version activated
+          description: Purpose activated
           headers:
             X-Rate-Limit-Limit:
               $ref: '#/components/headers/RateLimitLimitHeader'
@@ -2929,7 +2921,7 @@ paths:
               $ref: '#/components/headers/RateLimitRemainingHeader'
             X-Rate-Limit-Interval:
               $ref: '#/components/headers/RateLimitIntervalHeader'
-  /purposes/{purposeId}/versions/{versionId}/approve:
+  /purposes/{purposeId}/approve:
     parameters:
       - name: purposeId
         in: path
@@ -2937,17 +2929,11 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: versionId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
     post:
-      description: Approve Waiting for approval Purpose Version
+      description: Approve Waiting for approval Purpose
       responses:
         "204":
-          description: Purpose version approved
+          description: Purpose approved
           headers:
             X-Rate-Limit-Limit:
               $ref: '#/components/headers/RateLimitLimitHeader'
@@ -3020,7 +3006,7 @@ paths:
               $ref: '#/components/headers/RateLimitRemainingHeader'
             X-Rate-Limit-Interval:
               $ref: '#/components/headers/RateLimitIntervalHeader'
-  /purposes/{purposeId}/versions/{versionId}/suspend:
+  /purposes/{purposeId}/suspend:
     parameters:
       - name: purposeId
         in: path
@@ -3028,17 +3014,11 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: versionId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
     post:
-      description: Suspend Purpose Version
+      description: Suspend Purpose
       responses:
         "204":
-          description: Purpose version suspended
+          description: Purpose suspended
           headers:
             X-Rate-Limit-Limit:
               $ref: '#/components/headers/RateLimitLimitHeader'
@@ -3111,7 +3091,7 @@ paths:
               $ref: '#/components/headers/RateLimitRemainingHeader'
             X-Rate-Limit-Interval:
               $ref: '#/components/headers/RateLimitIntervalHeader'
-  /purposes/{purposeId}/versions/{versionId}/unsuspend:
+  /purposes/{purposeId}/unsuspend:
     parameters:
       - name: purposeId
         in: path
@@ -3119,17 +3099,11 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: versionId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
     post:
-      description: Unsuspend Purpose Version
+      description: Unsuspend Purpose
       responses:
         "204":
-          description: Purpose version unsuspended
+          description: Purpose unsuspended
           headers:
             X-Rate-Limit-Limit:
               $ref: '#/components/headers/RateLimitLimitHeader'
@@ -4417,6 +4391,12 @@ components:
         delegationId:
           type: string
           format: uuid
+        currentVersion:
+          $ref: "#/components/schemas/PurposeVersion"
+        waitingForApprovalVersion:
+          $ref: "#/components/schemas/PurposeVersion"
+        rejectedVersion:
+          $ref: "#/components/schemas/PurposeVersion"
       required:
         - id
         - eserviceId
@@ -4426,6 +4406,7 @@ components:
         - createdAt
         - isRiskAnalysisValid
         - isFreeOfCharge
+        - currentVersion
     PurposeSeed:
       type: object
       additionalProperties: false
@@ -4543,6 +4524,19 @@ components:
         - dailyCalls
         - createdAt
       description: business representation of a purpose version
+    PurposeVersions:
+      type: object
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/PurposeVersion"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - results
+        - pagination
     PurposeVersionDocument:
       type: object
       additionalProperties: false
