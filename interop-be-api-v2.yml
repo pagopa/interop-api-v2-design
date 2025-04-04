@@ -2739,6 +2739,101 @@ paths:
               $ref: '#/components/headers/RateLimitRemainingHeader'
             X-Rate-Limit-Interval:
               $ref: '#/components/headers/RateLimitIntervalHeader'
+    post:
+      summary: Create new version
+      operationId: createPurposeVersion
+      parameters:
+        - name: purposeId
+          in: path
+          description: The Purpose id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurposeVersionSeed"
+        required: true
+      responses:
+        "201":
+          description: Purpose version created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurposeVersion"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            X-Rate-Limit-Limit:
+              $ref: '#/components/headers/RateLimitLimitHeader'
+            X-Rate-Limit-Remaining:
+              $ref: '#/components/headers/RateLimitRemainingHeader'
+            X-Rate-Limit-Interval:
+              $ref: '#/components/headers/RateLimitIntervalHeader'
   /purposes/{purposeId}/versions/{versionId}:
     get:
       description: Get purpose version
@@ -4641,6 +4736,17 @@ components:
         createdAt:
           type: string
           format: date-time
+    PurposeVersionSeed:
+      type: object
+      additionalProperties: false
+      required:
+        - dailyCalls
+      properties:
+        dailyCalls:
+          description: Maximum number of daily calls that this version can perform
+          type: integer
+          format: int32
+          minimum: 0
     PurposeVersionState:
       type: string
       description: Purpose State
