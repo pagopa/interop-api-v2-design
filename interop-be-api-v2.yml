@@ -3293,7 +3293,11 @@ paths:
   /tenants:
     parameters:
       - in: query
-        name: ipaCode
+        name: externalIdOrigin
+        schema:
+          type: string
+      - in: query
+        name: externalIdValue
         schema:
           type: string
       - in: query
