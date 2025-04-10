@@ -1526,6 +1526,26 @@ paths:
       description: Get eservices
       operationId: getEServices
       parameters:
+        - in: query
+          name: producersIds
+          description: comma separated sequence of producers IDs
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
+        - in: query
+          name: templatesIds
+          description: comma separated sequence of template IDs
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+            default: []
+          explode: false
         - name: offset
           in: query
           description: The offset used for pagination
