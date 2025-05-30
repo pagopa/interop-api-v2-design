@@ -16,54 +16,24 @@ security:
 tags:
   - name: clients
     description: Clients routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: attributes
     description: Attributes routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: agreements
     description: Agreements routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: eservices
     description: E-Services routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: keys
     description: Keys routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: purposes
     description: Purposes routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: tenants
     description: Tenants routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: delegations
     description: Delegations routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: eserviceTemplates
     description: E-Service Templates routes
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
   - name: health
     description: Verify service status
-    externalDocs:
-      description: Find out more
-      url: "http://swagger.io"
 paths:
   /agreements:
     get:
