@@ -5,9 +5,8 @@ info:
   version: "2.0.0"
   contact:
     name: API Support
-    url: "http://www.example.com/support"
-    email: support@example.com
-  termsOfService: "http://swagger.io/terms/"
+    url: "https://github.com/pagopa/pdnd-interop-frontend/issues"
+  termsOfService: "https://selfcare.interop.pagopa.it/ui/it/termini-di-servizio"
 servers:
   - url: "https://api.uat.interop.pagopa.it/v2"
     description: UAT environment
@@ -4824,7 +4823,7 @@ components:
             items:
               type: string
               minLength: 1
-              maxLength: 250
+              maxLength: 500
       required:
         - version
         - answers
