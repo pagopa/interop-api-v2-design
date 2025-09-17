@@ -173,6 +173,8 @@ paths:
       summary: Create a new Agreement
       description: Create a new Agreement in Draft state
       operationId: createAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -358,6 +360,8 @@ paths:
       summary: Delete an Agreement
       description: Delete an Agreement in Draft, Pending, or MissingCertifiedAttributes state
       operationId: deleteAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: Agreement deleted
@@ -560,6 +564,8 @@ paths:
       summary: Approve an Agreement in Pending state
       description: Approve an Agreement that is in Pending state, transitioning it to Active state
       operationId: approveAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -672,6 +678,8 @@ paths:
       summary: Reject an Agreement in Pending state
       description: Reject an Agreement that is in Pending state, transitioning it to Rejected state
       operationId: rejectAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -772,6 +780,8 @@ paths:
       summary: Submit an Agreement in Draft state
       description: Submit an Agreement that is in Draft state, transitioning it to Active state if all requirements are satisfied, to Pending otherwise
       operationId: submitAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -888,6 +898,8 @@ paths:
         Suspend an Agreement that is in Active or Suspended state, transitioning it to Suspended state
         An Agreement may already be in Suspended state when previously suspended by the consumer or the producer
       operationId: suspendAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -989,6 +1001,8 @@ paths:
         Unsuspend an Agreement that is in Suspended state, transitioning it to Active or Suspended state
         An Agreement may remain in Suspended state when suspended also by the consumer or the producer
       operationId: unsuspendAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -1090,6 +1104,8 @@ paths:
         Upgrade the Agreement to a newer E-Service version, if available
         The current Agreement will be archived and a new Agreement will be created, in the same state
       operationId: upgradeAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Agreement upgraded
@@ -1186,6 +1202,8 @@ paths:
         Clone a rejected Agreement.
         A new draft Agreement will be created
       operationId: cloneAgreement
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Agreement cloned
@@ -1293,6 +1311,8 @@ paths:
       summary: Upload an Agreement Consumer Document
       description: Upload a Consumer Document for the specified Agreement
       operationId: uploadAgreementConsumerDocument
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           multipart/form-data:
@@ -1601,6 +1621,8 @@ paths:
       summary: Delete an Agreement Consumer Document
       description: Delete a specific Consumer Document from the specified Agreement
       operationId: deleteAgreementConsumerDocument
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: Consumer Document deleted successfully
@@ -1896,6 +1918,8 @@ paths:
       summary: Create a new Consumer Delegation
       description: Create a new Consumer Delegation in Waiting for Approval state
       operationId: createConsumerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -2077,6 +2101,8 @@ paths:
       summary: Accept a Consumer Delegation in Waiting for Approval state
       description: Accept a Consumer Delegation that is in Waiting for Approval state, transitioning it to Active state
       operationId: acceptConsumerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Consumer Delegation accepted
@@ -2288,6 +2314,8 @@ paths:
       summary: Create a new Producer Delegation
       description: Create a new Producer Delegation in Waiting for Approval state
       operationId: createProducerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -2469,6 +2497,8 @@ paths:
       summary: Accept a Producer Delegation in Waiting for Approval state
       description: Accept a Producer Delegation that is in Waiting for Approval state, transitioning it to Active state
       operationId: acceptProducerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Producer Delegation accepted
@@ -2569,6 +2599,8 @@ paths:
       summary: Reject a Producer Delegation in Waiting for Approval state
       description: Reject a Producer Delegation that is in Waiting for Approval state, transitioning it to Rejected state
       operationId: rejectProducerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -2743,6 +2775,8 @@ paths:
           - have a unique name across all Attributes in the Platform
           - have a unique code across certified Attributes owned by the requester
       operationId: createCertifiedAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -3157,6 +3191,8 @@ paths:
         Create a verified Attribute
         The Attribute must have a unique name across all Attributes in the Platform
       operationId: createVerifiedAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -3328,6 +3364,8 @@ paths:
         Create a declared Attribute
         The Attribute must have a unique name across all Attributes in the Platform
       operationId: createDeclaredAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -3704,6 +3742,8 @@ paths:
         Link a Client to a Purpose
         The Purpose must be in Active or Suspended state
       operationId: addClientPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -3820,6 +3860,8 @@ paths:
       summary: Unlink a Client from a Purpose
       description: Unlink a Client from a Purpose, removing the association between them
       operationId: removeClientPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: Client unlinked from the Purpose
@@ -4298,6 +4340,8 @@ paths:
         Link a Producer Keychain to an E-Service
         You must be the E-Service owner
       operationId: addProducerKeychainEService
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -4414,6 +4458,8 @@ paths:
       summary: Unlink an E-Service from a Producer Keychain
       description: Unlink an E-Service from a Producer Keychain, removing the association between them
       operationId: removeProducerKeychainEService
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service unlinked from the Producer Keychain
@@ -4616,6 +4662,8 @@ paths:
       summary: Reject a Consumer Delegation in Waiting for Approval state
       description: Reject a Consumer Delegation that is in Waiting for Approval state, transitioning it to Rejected state
       operationId: rejectConsumerDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -4836,6 +4884,8 @@ paths:
       summary: Create a new E-Service
       operationId: createEService
       description: Create a new E-Service in Draft state
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         description: An E-Service seed
         content:
@@ -5022,6 +5072,8 @@ paths:
       summary: Update a Draft E-Service
       description: Update an E-Service in Draft state
       operationId: updateDraftEService
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -5126,6 +5178,8 @@ paths:
       summary: Delete an E-Service
       operationId: deleteEService
       description: Delete an E-Service in Draft state
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service deleted
@@ -5216,6 +5270,8 @@ paths:
       summary: Update the delegation configurations of an E-Service after its publication
       description: Update the delegation configurations of an E-Service in Published, Suspended, or Deprecated state
       operationId: updatePublishedEServiceDelegation
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -5329,6 +5385,8 @@ paths:
       summary: Update the description of an E-Service after its publication
       description: Update the description of an E-Service in Published, Suspended, or Deprecated state
       operationId: updatePublishedEServiceDescription
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -5430,6 +5488,8 @@ paths:
       summary: Update the name of an E-Service after its publication
       description: Update the name of an E-Service in Published, Suspended, or Deprecated state
       operationId: updatePublishedEServiceName
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -5640,6 +5700,8 @@ paths:
       description: |
         Create a new E-Service Descriptor.
         This E-Service must not already have a descriptor in a Draft state.
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -5819,6 +5881,8 @@ paths:
       summary: Update a Draft E-Service Descriptor
       description: Update an E-Service Descriptor in Draft state
       operationId: updateDraftEServiceDescriptor
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -5912,6 +5976,8 @@ paths:
       description: |
         Delete an E-Service Descriptor in Draft state.
         It is not possible to delete the last remaining Descriptor for an E-Service.
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service Descriptor deleted
@@ -6112,6 +6178,8 @@ paths:
       summary: Upload an E-Service Descriptor Document
       description: Upload a Document for the specified E-Service Descriptor
       operationId: uploadEServiceDescriptorDocument
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           multipart/form-data:
@@ -6311,6 +6379,8 @@ paths:
       summary: Delete an E-Service Descriptor Document
       description: Delete a specific Document for the specified E-Service Descriptor
       operationId: deleteEServiceDescriptorDocument
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service Descriptor Document deleted
@@ -6483,6 +6553,8 @@ paths:
         If the Descriptor already has an interface, it should be first deleted before uploading a new one.
         The Descriptor must be in Draft state.
       operationId: uploadEServiceDescriptorInterface
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           multipart/form-data:
@@ -6576,6 +6648,8 @@ paths:
         Delete the interface document of an E-Service Descriptor.
         The Descriptor must be in Draft state.
       operationId: deleteEServiceDescriptorInterface
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service Descriptor interface deleted successfully
@@ -6659,6 +6733,7 @@ paths:
       operationId: suspendDescriptor
       description: Suspend an E-Service Descriptor that is in Published or Deprecated state, transitioning it to Suspended state
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - name: eserviceId
           in: path
           description: The E-Service ID of the Descriptor
@@ -6760,6 +6835,7 @@ paths:
       description: Unsuspend an E-Service Descriptor that is in Suspended state, transitioning it to Active or Deprecated state
       operationId: unsuspendDescriptor
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - name: eserviceId
           in: path
           description: The E-Service ID of the Descriptor
@@ -6861,6 +6937,7 @@ paths:
       operationId: publishDescriptor
       description: Publish an E-Service Descriptor that is in Draft state
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - name: eserviceId
           in: path
           description: The E-Service ID of the Descriptor
@@ -6962,6 +7039,7 @@ paths:
       operationId: approveDelegatedEServiceDescriptor
       description: Approve a delegated E-Service Descriptor that is in Waiting for Approval state
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - name: eserviceId
           in: path
           description: The E-Service ID of the Descriptor
@@ -7070,6 +7148,7 @@ paths:
               $ref: "#/components/schemas/RejectDelegatedEServiceDescriptorSeed"
         required: true
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - name: eserviceId
           in: path
           description: The E-Service ID of the Descriptor
@@ -7180,6 +7259,8 @@ paths:
         Create a Risk Analysis for an E-Service.
         The E-Service must be in Draft state and in Receive mode.
       operationId: createEServiceRiskAnalysis
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -7451,6 +7532,8 @@ paths:
         Delete a Risk Analysis for an E-Service.
         The E-Service must be in Draft state and in Receive mode.
       operationId: deleteEServiceRiskAnalysis
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: E-Service Risk Analysis deleted
@@ -7926,6 +8009,8 @@ paths:
       summary: Create a new Purpose
       description: Create a new Purpose in Draft state
       operationId: createPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -8239,6 +8324,8 @@ paths:
       summary: Delete Purpose
       description: Delete Purpose. Only purposes with one version can be deleted. The version must be in Draft or WaitingForApproval state
       operationId: deletePurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: Purpose deleted
@@ -8322,6 +8409,8 @@ paths:
         Update a Purpose in Draft state.
         Purpose must have a single version, and that version must be in Draft state.
       operationId: updateDraftPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -8544,6 +8633,8 @@ paths:
         Create a new Purpose Version to update daily calls
         The new Version will be created in Active state if daily calls are under the E-Service threshold, in Waiting for Approval otherwise
       operationId: createPurposeVersion
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -8749,6 +8840,8 @@ paths:
       summary: Delete a Purpose Version
       description: Delete a Purpose Version in waiting for approval or draft state
       operationId: deletePurposeVersion
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "204":
           description: Purpose Version deleted
@@ -8854,6 +8947,8 @@ paths:
         Activate a Purpose that is in Draft states
         The new state will be Active if daily calls are under the E-Service threshold, Waiting for Approval otherwise
       operationId: activateDraftPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -8969,6 +9064,8 @@ paths:
         Existing Waiting for Approval Versions will be deleted
         The Archived state is not reversible
       operationId: archivePurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Purpose archived
@@ -9076,6 +9173,8 @@ paths:
       summary: Approve a Purpose in Waiting for Approval state
       description: Approve a Purpose that is in Waiting for Approval state, transitioning it to Active state
       operationId: approvePurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -9177,6 +9276,8 @@ paths:
         Suspend a Purpose that is in Active or Suspended state, transitioning it to Suspended state
         A Purpose may already be in Suspended state when previously suspended by the consumer or the producer
       operationId: suspendPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -9291,6 +9392,8 @@ paths:
         Unsuspend a Purpose that is in Suspended state, transitioning it to Active or Suspended state
         A Purpose may remain in Suspended state when suspended also by the consumer or the producer
       operationId: unsuspendPurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -9395,6 +9498,8 @@ paths:
       summary: Create a new reverse Purpose
       description: Create a new purpose for an E-Service in receive mode
       operationId: createReversePurpose
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -9976,6 +10081,8 @@ paths:
       summary: Assign a Declared Attribute to a Tenant
       description: Assign a Declared Attribute to a Tenant
       operationId: assignTenantDeclaredAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -10083,6 +10190,8 @@ paths:
       summary: Revoke a Declared Attribute from a Tenant
       description: Revoke a Declared Attribute from a Tenant
       operationId: revokeTenantDeclaredAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Declared Attribute revoked
@@ -10267,6 +10376,8 @@ paths:
       summary: Assign a Certified Attribute to a Tenant
       description: Assign a Certified Attribute to a Tenant
       operationId: assignTenantCertifiedAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         content:
           application/json:
@@ -10387,6 +10498,8 @@ paths:
       summary: Revoke a Certified Attribute from a Tenant
       description: Revoke a Certified Attribute from a Tenant
       operationId: revokeTenantCertifiedAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       responses:
         "200":
           description: Certified Attribute revoked
@@ -10586,6 +10699,8 @@ paths:
         If the attribute is already assigned, you will be added to the list of verifiers.
       description: Assign a Verified Attribute to a Tenant
       operationId: assignTenantVerifiedAttribute
+      parameters:
+        - $ref: "#/components/parameters/DPoP"
       requestBody:
         required: true
         content:
@@ -10696,6 +10811,7 @@ paths:
         You will be added to the list of revokers of the tenant Verified Attribute.
       operationId: revokeTenantVerifiedAttribute
       parameters:
+        - $ref: "#/components/parameters/DPoP"
         - in: query
           required: true
           name: agreementId
@@ -11028,6 +11144,15 @@ paths:
             X-Rate-Limit-Interval:
               $ref: "#/components/headers/RateLimitIntervalHeader"
 components:
+  parameters:
+    DPoP:
+      in: header
+      name: DPoP
+      description: Demonstrating Proof of Possession proof
+      required: true
+      schema:
+        type: string
+        format: jws
   schemas:
     Agreement:
       type: object
