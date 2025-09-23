@@ -8,7 +8,7 @@ info:
     url: "https://github.com/pagopa/pdnd-interop-frontend/issues"
   termsOfService: "https://selfcare.interop.pagopa.it/ui/it/termini-di-servizio"
 servers:
-  - url: "https://api.uat.interop.pagopa.it/v2"
+  - url: "https://api.interop.pagopa.it/v3"
     description: UAT environment
 security:
   - bearerAuth: []
